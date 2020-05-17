@@ -4,11 +4,22 @@
 
 int main()
 {
-	/*Fecha a("12/01/1999");
-	std::cin>>a;
-	std::cout<<a<<std::endl;*/
-	Cadena c("hola");
-	c+="adios";
-	std::cout<<c<<std::endl;
+	Fecha a;
+	bool correcta = false;
+	while(!correcta)
+	{
+		Fecha b;
+		try
+		{
+			std::cin.clear();
+			//std::cin.ignore();
+			std::cin>>b;
+			correcta = true;
+		}		
+		catch(Fecha::Invalida& e)
+		{
+			std::cout<<e.por_que()<<std::endl;
+		}
+	}
+	std::cout<<a<<std::endl;
 }
-//ls -1 Marquez_Delgado_Jesus/P1/{{cadena,fecha}.[ch]pp,Makefile} | tar -cvzf Marquez_Delgado_Jesus.tar.gz -T -
