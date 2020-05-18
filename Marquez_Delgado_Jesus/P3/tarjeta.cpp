@@ -25,14 +25,16 @@ Numero::Numero(Cadena numero) : numero_(numero)
 		numero_ = numero_.substr(0,j);
 	}
 
-	aux = find_if(numero_.begin(),numero_.end(),EsDigito)
+	aux = std::find_if(numero_.begin(),numero_.end(),EsDigito);
+	if(aux != numero_.end())
+		throw Incorrecto(DIGITOS);
 
 	if(numero_.length() < 13 || numero_.length() > 19)
 		throw Incorrecto(LONGITUD);
-	/*else if(!luhn(numero_))
+	else if(!luhn(numero_))
 	{
 		throw Incorrecto(NO_VALIDO);
-	}*/
+	}
 };
 
 Numero::operator const char*() const
