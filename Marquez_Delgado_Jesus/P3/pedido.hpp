@@ -1,11 +1,12 @@
 #ifndef PEDIDO_HPP_
 #define PEDIDO_HPP_
 
+#include <ostream>
 #include "tarjeta.hpp"
 #include "../P1/fecha.hpp"
 #include "../P1/cadena.hpp"
-#include "pedido_articulo.hpp"
-#include "usuario_pedido.hpp"
+#include "pedido-articulo.hpp"
+#include "usuario-pedido.hpp"
 
 class Pedido
 {
@@ -52,6 +53,6 @@ private:
     static unsigned n_total_pedidos_;
 };
 
-
+std::ostream& operator << (std::ostream& os, const Pedido& p);
 
 #endif

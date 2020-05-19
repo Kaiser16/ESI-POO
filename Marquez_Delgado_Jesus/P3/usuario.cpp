@@ -146,17 +146,5 @@ std::ostream& mostrar_carro (std::ostream& os, const Usuario& u)
         ++it;
     }
 	return os;
-	/*
-	os<<"Carrito de la compra de "<<u.id()<<" [Articulos: "<<u.n_articulos()<<"]\n";
-	os<<" Cant. Artículo\n";
-	
-	Usuario::Articulos compra = u.compra();
-	Usuario::Articulos::const_iterator it = compra.begin();
-	for(auto& i : u.compra())
-    {
-        os << "  " << i.second << "\t" << "[" << i.first->referencia() << "] \"" << i.first->titulo() << "\", ";
-        os << i.first->f_publi().anno() << ". " << std::setprecision(2) << std::fixed << i.first->precio() << " €" << std::endl;
-    }
-	return os;*/
 }
 
