@@ -13,7 +13,7 @@ public:
     void asocia(Pedido* p,Usuario* u);
 
     const Pedidos& pedidos(const Usuario* u) const;
-    const Usuarios& cliente(const Pedido* p) const;
+    const Usuario& cliente(const Pedido* p) const;
 private:
     std::map<Usuario*,Pedidos> Usuario_Pedido;
     std::map<Pedido*,Usuario*> Pedido_Usuario;

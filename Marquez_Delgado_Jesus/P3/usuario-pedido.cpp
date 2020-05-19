@@ -18,7 +18,7 @@ const Pedidos& pedidos(const Usuario* u) const
     return Usuario_Pedido.find(u)->second;
 }
 
-const Usuarios& cliente(const Pedido* p) const
+const Usuario& cliente(const Pedido* p) const
 {
     return Pedido_Usuario.find(p)->second;
 }

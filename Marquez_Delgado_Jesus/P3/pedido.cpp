@@ -5,14 +5,29 @@ Tarjeta& tarjeta,Fecha& fecha): tarjeta_(&tarjeta), fecha_(fecha)
 {
     if(usuario.compra().empty())
         throw Vacio(usuario);
-    if(usuario.id() != tarjeta_->titular()->id())
+    else if(usuario.id() != tarjeta_->titular()->id())
         throw Impostor(usuario);
-    //Comprobar Stock
-    if(tarjeta_->caducidad() < fecha_)
+    else if(tarjeta_->caducidad() < fecha_)
         throw Tarjeta::Caducada(tarjeta_->caducidad());
-    if(!tarjeta_->activa())
+    else if(!tarjeta_->activa())
         throw Tarjeta::Desactivada();
-    
+    else
+    {
+        Usuario::Articulos compra = usuario.compra();
+        for(Usuario::Articulos::iterator it = compra.begin(); it != compra.end(); ++it)
+        {
+            if(it->first->stock() < it->second)
+                throw Pedido::SinStock(*it->first);
+            else
+            {
+                it->first->stock() -= it->second;
+                pedArt.pedir(*this,*it->first,it->first->precio(),it->second);
+                total_ += it->first->precio() * it->second;
+                usuario.compra(*it->first,0);
+            }
+        }        
+        usuPed.asocia(*this,usuario);
+    }
 }
 
 const unsigned Pedido::numero() const
