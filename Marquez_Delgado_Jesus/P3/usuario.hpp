@@ -1,7 +1,7 @@
 #ifndef USUARIO_HPP_
 #define USUARIO_HPP_
 
-//#include <crypt.h>
+#include <crypt.h>
 #include <unistd.h>
 #include <map>             
 #include <unordered_map>   

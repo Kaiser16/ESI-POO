@@ -2,7 +2,6 @@
 #define TARJETA_HPP_
 
 #include <set>
-#include <algorithm> 
 #include "../P1/cadena.hpp"
 #include "../P1/fecha.hpp"
 #include "usuario.hpp"
@@ -79,5 +78,25 @@ private:
 bool operator <(const Tarjeta& a,const Tarjeta& b);
 
 std::ostream& operator << (std::ostream& os, const Tarjeta& t);
+
+inline const Numero Tarjeta::numero() const
+{
+	return numero_;
+}
+
+inline const Usuario* Tarjeta::titular() const
+{
+	return titular_;
+}
+
+inline const Fecha Tarjeta::caducidad() const
+{
+	return caducidad_;
+}
+
+inline const bool Tarjeta::activa() const
+{
+	return activa_;
+}
 
 #endif

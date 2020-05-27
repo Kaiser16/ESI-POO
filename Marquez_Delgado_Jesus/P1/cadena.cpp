@@ -1,25 +1,25 @@
 #include "cadena.hpp"
 
-Cadena::Cadena(int tam,char c): tam_(tam), s_(new char[tam+1])
+Cadena::Cadena(int tam,char c): s_(new char[tam+1]), tam_(tam)
 {
 	for(int i = 0;i < tam; ++i)
 		s_[i] = c;
 	s_[tam] = '\0';
 }
 
-Cadena::Cadena(const Cadena& c): tam_(c.tam_), s_(new char[c.tam_+1])
+Cadena::Cadena(const Cadena& c): s_(new char[c.tam_+1]), tam_(c.tam_)
 {
 	strcpy(s_,c.s_);
 	s_[tam_] = '\0';
 }
 
-Cadena::Cadena(Cadena &&c): tam_(c.tam_), s_(c.s_)
+Cadena::Cadena(Cadena &&c): s_(c.s_), tam_(c.tam_)
 {
 	c.s_ = nullptr;
 	c.tam_ = 0;
 }
 
-Cadena::Cadena(const char* s): tam_(strlen(s)), s_(new char[strlen(s)+1])
+Cadena::Cadena(const char* s): s_(new char[strlen(s)+1]), tam_(strlen(s))
 {
 	strcpy(s_,s);
 	s_[tam_] = '\0';

@@ -4,31 +4,19 @@
 
 std::set<Numero> Tarjeta::tarjetas_{};
 
-bool EsBlanco(char c)
+Numero::Numero(Cadena numero)
 {
-	return isspace(c);
-}
-
-bool EsDigito(char c)
-{
-	return isalpha(c);
-}
-
-Numero::Numero(Cadena numero) : numero_(numero)
-{
-	auto aux = std::remove_if(numero_.begin(),numero_.end(),EsBlanco);
-	if(aux != numero_.end())
+	char aux[100] = "";
+	int j = 0;
+	for(int i = 0; i < numero.length();i++)
 	{
-		int j = 0;
-		for(auto i = numero_.begin(); i!=aux;++i)
-			j++;
-		numero_ = numero_.substr(0,j);
+		while(isspace(numero[i])) i++;
+		if(isalpha(numero[i]))
+			throw Incorrecto(DIGITOS);
+		aux[j] = numero[i];
+		j++;
 	}
-
-	aux = std::find_if(numero_.begin(),numero_.end(),EsDigito);
-	if(aux != numero_.end())
-		throw Incorrecto(DIGITOS);
-
+	numero_ = aux;
 	if(numero_.length() < 13 || numero_.length() > 19)
 		throw Incorrecto(LONGITUD);
 	else if(!luhn(numero_))
@@ -65,26 +53,6 @@ Tarjeta::Tarjeta(Numero numero,Usuario& titular,Fecha caducidad)
 	titular.es_titular_de(*this);
 	if(!(tarjetas_.insert(numero).second))
 		throw Tarjeta::Num_duplicado(numero_);
-}
-
-const Numero Tarjeta::numero() const
-{
-	return numero_;
-}
-
-const Usuario* Tarjeta::titular() const
-{
-	return titular_;
-}
-
-const Fecha Tarjeta::caducidad() const
-{
-	return caducidad_;
-}
-
-const bool Tarjeta::activa() const
-{
-	return activa_;
 }
 
 const Tarjeta::Tipo Tarjeta::tipo() const

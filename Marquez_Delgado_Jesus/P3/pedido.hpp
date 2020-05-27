@@ -1,23 +1,27 @@
 #ifndef PEDIDO_HPP_
 #define PEDIDO_HPP_
 
-#include <ostream>
-#include "tarjeta.hpp"
-#include "../P1/fecha.hpp"
-#include "../P1/cadena.hpp"
 #include "pedido-articulo.hpp"
 #include "usuario-pedido.hpp"
+#include "tarjeta.hpp"
+#include "usuario.hpp"
+#include "articulo.hpp"
+#include "../P1/fecha.hpp"
+
+class Pedido_Articulo;
+class Tarjeta;
+class Usuario_Pedido;
 
 class Pedido
 {
 public:
-    Pedido(Usuario_Pedido& usuPed,Pedido_Articulo& pedArt,Usuario& usuario,Tarjeta& tarjeta,Fecha& fecha);
+    Pedido(Usuario_Pedido& usuPed,Pedido_Articulo& pedArt,Usuario& usuario,const Tarjeta& tarjeta,const Fecha& fecha = Fecha());
 
     class Vacio
     {
     public:
-        Vacio(Usuario& u): u_(&u){};
-        inline const Usuario* usuario() const {return u_;};
+        Vacio(Usuario* u): u_(u){};
+        inline const Usuario& usuario() const {return *u_;};
     private:
         Usuario* u_;
     };
@@ -25,8 +29,8 @@ public:
     class Impostor
     {
     public:
-        Impostor(Usuario& u): u_(&u){};
-        inline const Usuario* usuario() const {return u_;};
+        Impostor(Usuario* u): u_(u){};
+        inline const Usuario& usuario() const {return *u_;};
     private:
         Usuario* u_;
     };
@@ -34,8 +38,8 @@ public:
     class SinStock
     {
     public:
-        SinStock(Articulo& a): a_(&a){};
-        inline const Articulo* articulo() const {return a_;};
+        SinStock(Articulo* a): a_(a){};
+        inline const Articulo& articulo() const {return *a_;};
     private:
         Articulo* a_;
     };
@@ -44,13 +48,17 @@ public:
     const Tarjeta* tarjeta() const;
     const Fecha fecha() const;
     const double total() const;
-    const unsigned n_total_pedidos() const;
+    static unsigned n_total_pedidos()
+    {
+        return Npedidos_;
+    };
+    
 private:
-    unsigned numero_;
-    Tarjeta* tarjeta_;
+    int num_;
+    const Tarjeta* tarjeta_;
     Fecha fecha_;
     double total_;
-    static unsigned n_total_pedidos_;
+    static unsigned Npedidos_;
 };
 
 std::ostream& operator << (std::ostream& os, const Pedido& p);

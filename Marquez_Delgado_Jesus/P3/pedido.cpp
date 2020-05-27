@@ -1,12 +1,14 @@
 #include "pedido.hpp"
 
-Pedido::Pedido(Usuario_Pedido& usuPed,Pedido_Articulo& pedArt,Usuario& usuario,
-Tarjeta& tarjeta,Fecha& fecha): tarjeta_(&tarjeta), fecha_(fecha)
+unsigned Pedido::Npedidos_ = 0;
+
+Pedido::Pedido(Usuario_Pedido& usuPed,Pedido_Articulo& pedArt,Usuario& usuario,const Tarjeta& tarjeta,const Fecha& fecha)
+: num_(Npedidos_+1), tarjeta_(&tarjeta), fecha_(fecha), total_(0.0)
 {
     if(usuario.compra().empty())
-        throw Vacio(usuario);
+        throw Pedido::Vacio(&usuario);
     else if(usuario.id() != tarjeta_->titular()->id())
-        throw Impostor(usuario);
+        throw Pedido::Impostor(&usuario);
     else if(tarjeta_->caducidad() < fecha_)
         throw Tarjeta::Caducada(tarjeta_->caducidad());
     else if(!tarjeta_->activa())
@@ -17,7 +19,11 @@ Tarjeta& tarjeta,Fecha& fecha): tarjeta_(&tarjeta), fecha_(fecha)
         for(Usuario::Articulos::iterator it = compra.begin(); it != compra.end(); ++it)
         {
             if(it->first->stock() < it->second)
-                throw Pedido::SinStock(*it->first);
+            {
+                for(Usuario::Articulos::iterator auxit = it; auxit != compra.end(); ++auxit)
+                    usuario.compra(*auxit->first,0);
+                throw Pedido::SinStock(it->first);
+            }
             else
             {
                 it->first->stock() -= it->second;
@@ -28,11 +34,12 @@ Tarjeta& tarjeta,Fecha& fecha): tarjeta_(&tarjeta), fecha_(fecha)
         }        
         usuPed.asocia(*this,usuario);
     }
+    Npedidos_++;
 }
 
 const unsigned Pedido::numero() const
 {
-    return numero_;
+    return num_;
 }
 
 const Tarjeta* Pedido::tarjeta() const
@@ -50,17 +57,11 @@ const double Pedido::total() const
     return total_;
 }
 
-const unsigned Pedido::n_total_pedidos() const
-{
-    return n_total_pedidos_;
-}
-
 std::ostream& operator << (std::ostream& os, const Pedido& p)
 {
-    os<<"\n";
-    os<<"Num. pedido:\t"<<p.numero()<<std::endl;
-    os<<"Fecha:\t"<<p.fecha()<<std::endl;
-    os<<"Pagado con:\t";
+    os<<"Núm. pedido: "<<p.numero()<<std::endl;
+    os<<"Fecha:       "<<p.fecha()<<std::endl;
+    os<<"Pagado con:  ";
     
     if(p.tarjeta()->tipo() == Tarjeta::AmericanExpress)
 		os<<"AmericanExpress";
@@ -73,10 +74,9 @@ std::ostream& operator << (std::ostream& os, const Pedido& p)
 	else if(p.tarjeta()->tipo() == Tarjeta::Maestro)
 		os<<"Maestro";
 	else
-		os<<"Otros";
-
+		os<<"Tipo indeterminado";
     os<<" n.º: "<<p.tarjeta()->numero()<<std::endl;
-    os<<"Importe:\t"<<p.total()<<" €"<<std::endl;
+    os<<"Importe:     "<<std::fixed<<std::setprecision(2)<<p.total()<<" €"<<std::endl;
 
     return os;
 }
