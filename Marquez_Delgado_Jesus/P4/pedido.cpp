@@ -18,20 +18,34 @@ Pedido::Pedido(Usuario_Pedido& usuPed,Pedido_Articulo& pedArt,Usuario& usuario,c
         Usuario::Articulos compra = usuario.compra();
         for(Usuario::Articulos::iterator it = compra.begin(); it != compra.end(); ++it)
         {
-            if(it->first->stock() < it->second)
+            if(ArticuloAlmacenable* Aa = dynamic_cast<ArticuloAlmacenable*>(it->first))
             {
-                for(Usuario::Articulos::iterator auxit = it; auxit != compra.end(); ++auxit)
-                    usuario.compra(*auxit->first,0);
-                throw Pedido::SinStock(it->first);
+                if(Aa->stock() < it->second)
+                {
+                    for(Usuario::Articulos::iterator auxit = it; auxit != compra.end(); ++auxit)
+                        usuario.compra(*auxit->first,0);
+                    throw Pedido::SinStock(Aa);
+                }
             }
-            else
+            else if(LibroDigital* Ld = dynamic_cast<LibroDigital*>(it->first))
             {
-                it->first->stock() -= it->second;
-                pedArt.pedir(*this,*it->first,it->first->precio(),it->second);
-                total_ += it->first->precio() * it->second;
-                usuario.compra(*it->first,0);
+                if(Ld->f_expir() < fecha)
+                    usuario.compra(*it->first,0);
             }
-        }        
+        }
+
+        if(usuario.compra().empty())
+            throw Pedido::Vacio(&usuario);
+        
+        compra = usuario.compra();
+        for(Usuario::Articulos::iterator it = compra.begin(); it != compra.end(); ++it)
+        {
+            if(ArticuloAlmacenable* Aa = dynamic_cast<ArticuloAlmacenable*>(it->first))
+                Aa->stock() -= it->second;
+            pedArt.pedir(*this,*it->first,it->first->precio(),it->second);
+            total_ += it->first->precio() * it->second;
+            usuario.compra(*it->first,0);
+        }
         usuPed.asocia(*this,usuario);
     }
     Npedidos_++;

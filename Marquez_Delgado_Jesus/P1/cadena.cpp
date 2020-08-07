@@ -66,7 +66,7 @@ int Cadena::length() const
 
 Cadena& Cadena::operator += (const Cadena& c)
 {
-	char a[tam_+1];
+	char *a = new char[tam_+1];
 	strcpy(a,s_);
 	delete[] s_;
 	s_ = new char[tam_+c.tam_+1];
@@ -76,6 +76,7 @@ Cadena& Cadena::operator += (const Cadena& c)
 		s_[i+tam_] = c[i];
 	tam_ += c.tam_;
 	s_[tam_] = '\0';
+	delete[] a;
 	return *this;
 }
 
